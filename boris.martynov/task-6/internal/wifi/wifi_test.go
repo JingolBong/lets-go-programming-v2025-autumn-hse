@@ -59,7 +59,6 @@ func TestGetAddressesError(t *testing.T) {
 	require.Error(t, err)
 	require.Nil(t, addrs)
 	require.ErrorContains(t, err, errGettingInterface)
-
 }
 
 func TestGetNamesSuccess(t *testing.T) {

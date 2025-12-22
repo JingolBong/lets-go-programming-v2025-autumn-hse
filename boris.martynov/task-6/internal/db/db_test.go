@@ -34,6 +34,7 @@ func TestDBGetNamesSuccess(t *testing.T) {
 
 	service := db.New(mockDB)
 	name, err := service.GetNames()
+	require.NoError(t, err)
 	require.Equal(t, []string{"Jingol"}, name)
 	require.NoError(t, mock.ExpectationsWereMet())
 }
@@ -71,6 +72,7 @@ func TestDBGetNamesErrorScan(t *testing.T) {
 	require.ErrorContains(t, err, errRowScann.Error())
 	require.NoError(t, mock.ExpectationsWereMet())
 }
+
 func TestDBGetNamesErrorRow(t *testing.T) {
 	t.Parallel()
 
@@ -101,6 +103,7 @@ func TestDBUniqueGetNamesSuccess(t *testing.T) {
 
 	service := db.New(mockDB)
 	name, err := service.GetUniqueNames()
+	require.NoError(t, err)
 	require.Equal(t, []string{"Jingol"}, name)
 	require.NoError(t, mock.ExpectationsWereMet())
 }
@@ -138,6 +141,7 @@ func TestDBUniqueGetNamesErrorScan(t *testing.T) {
 	require.ErrorContains(t, err, errRowScann.Error())
 	require.NoError(t, mock.ExpectationsWereMet())
 }
+
 func TestDBUniqueGetNamesErrorRow(t *testing.T) {
 	t.Parallel()
 
