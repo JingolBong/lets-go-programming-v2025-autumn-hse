@@ -16,26 +16,15 @@ var errMocker = errors.New("error mock interface")
 
 const errGettingInterface = "getting interfaces: "
 
-type mockWiFi struct {
-	interfacesFunc func() ([]*wifi.Interface, error)
-}
-
-func (m *mockWiFi) Interfaces() ([]*wifi.Interface, error) {
-	return m.interfacesFunc()
-}
-
 func TestGetAddressesSuccess(t *testing.T) {
 	t.Parallel()
 
 	address, _ := net.ParseMAC("00:11:22:33:44:55")
 
-	mock := &mockWiFi{
-		interfacesFunc: func() ([]*wifi.Interface, error) {
-			return []*wifi.Interface{
-				{Name: "wlan0", HardwareAddr: address},
-			}, nil
-		},
-	}
+	mock := NewWiFiHandle(t)
+	mock.On("Interfaces").Return([]*wifi.Interface{
+		{Name: "wlan", HardwareAddr: address},
+	}, nil)
 
 	service := myWifiImpl.New(mock)
 	addressGot, err := service.GetAddresses()
@@ -47,11 +36,8 @@ func TestGetAddressesSuccess(t *testing.T) {
 func TestGetAddressesError(t *testing.T) {
 	t.Parallel()
 
-	mock := &mockWiFi{
-		interfacesFunc: func() ([]*wifi.Interface, error) {
-			return nil, errMocker
-		},
-	}
+	mock := NewWiFiHandle(t)
+	mock.On("Interfaces").Return(nil, errMocker)
 
 	service := myWifiImpl.New(mock)
 	addrs, err := service.GetAddresses()
@@ -64,13 +50,10 @@ func TestGetAddressesError(t *testing.T) {
 func TestGetNamesSuccess(t *testing.T) {
 	t.Parallel()
 
-	mock := &mockWiFi{
-		interfacesFunc: func() ([]*wifi.Interface, error) {
-			return []*wifi.Interface{
-				{Name: "wlan"},
-			}, nil
-		},
-	}
+	mock := NewWiFiHandle(t)
+	mock.On("Interfaces").Return([]*wifi.Interface{
+		{Name: "wlan"},
+	}, nil)
 
 	service := myWifiImpl.New(mock)
 	nameGot, err := service.GetNames()
@@ -82,11 +65,8 @@ func TestGetNamesSuccess(t *testing.T) {
 func TestGetNamesError(t *testing.T) {
 	t.Parallel()
 
-	mock := &mockWiFi{
-		interfacesFunc: func() ([]*wifi.Interface, error) {
-			return nil, errMocker
-		},
-	}
+	mock := NewWiFiHandle(t)
+	mock.On("Interfaces").Return(nil, errMocker)
 
 	service := myWifiImpl.New(mock)
 	names, err := service.GetNames()
