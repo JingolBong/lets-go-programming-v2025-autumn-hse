@@ -15,10 +15,10 @@ const (
 )
 
 var (
-	errorQuery    = errors.New("db query: ")
-	errorRowScann = errors.New("rows scanning: ")
-	errorRow      = errors.New("rows error: ")
-	errorClose    = errors.New("rows close")
+	errQuery    = errors.New("db query: ")
+	errRowScann = errors.New("rows scanning: ")
+	errRow      = errors.New("rows error: ")
+	errClose    = errors.New("rows close")
 )
 
 func TestDBGetNamesSuccess(t *testing.T) {
@@ -45,12 +45,12 @@ func TestDBGetNamesErrorQuery(t *testing.T) {
 	require.NoError(t, err)
 	defer mockDB.Close()
 
-	mock.ExpectQuery(nameQuery).WillReturnError(errorQuery)
+	mock.ExpectQuery(nameQuery).WillReturnError(errQuery)
 
 	service := db.New(mockDB)
 	name, err := service.GetNames()
 	require.Nil(t, name)
-	require.ErrorContains(t, err, errorQuery.Error())
+	require.ErrorContains(t, err, errQuery.Error())
 	require.NoError(t, mock.ExpectationsWereMet())
 }
 
@@ -68,7 +68,7 @@ func TestDBGetNamesErrorScan(t *testing.T) {
 	service := db.New(mockDB)
 	name, err := service.GetNames()
 	require.Nil(t, name)
-	require.ErrorContains(t, err, errorRowScann.Error())
+	require.ErrorContains(t, err, errRowScann.Error())
 	require.NoError(t, mock.ExpectationsWereMet())
 }
 func TestDBGetNamesErrorRow(t *testing.T) {
@@ -78,13 +78,13 @@ func TestDBGetNamesErrorRow(t *testing.T) {
 	require.NoError(t, err)
 	defer mockDB.Close()
 
-	row := sqlmock.NewRows([]string{"name"}).CloseError(errorClose)
+	row := sqlmock.NewRows([]string{"name"}).CloseError(errClose)
 	mock.ExpectQuery(nameQuery).WillReturnRows(row)
 
 	service := db.New(mockDB)
 	name, err := service.GetNames()
 	require.Nil(t, name)
-	require.ErrorContains(t, err, errorRow.Error())
+	require.ErrorContains(t, err, errRow.Error())
 	require.NoError(t, mock.ExpectationsWereMet())
 }
 
@@ -112,12 +112,12 @@ func TestDBUniqueGetNamesErrorQuery(t *testing.T) {
 	require.NoError(t, err)
 	defer mockDB.Close()
 
-	mock.ExpectQuery(uniqueNamesQuery).WillReturnError(errorQuery)
+	mock.ExpectQuery(uniqueNamesQuery).WillReturnError(errQuery)
 
 	service := db.New(mockDB)
 	name, err := service.GetUniqueNames()
 	require.Nil(t, name)
-	require.ErrorContains(t, err, errorQuery.Error())
+	require.ErrorContains(t, err, errQuery.Error())
 	require.NoError(t, mock.ExpectationsWereMet())
 }
 
@@ -135,7 +135,7 @@ func TestDBUniqueGetNamesErrorScan(t *testing.T) {
 	service := db.New(mockDB)
 	name, err := service.GetUniqueNames()
 	require.Nil(t, name)
-	require.ErrorContains(t, err, errorRowScann.Error())
+	require.ErrorContains(t, err, errRowScann.Error())
 	require.NoError(t, mock.ExpectationsWereMet())
 }
 func TestDBUniqueGetNamesErrorRow(t *testing.T) {
@@ -145,12 +145,12 @@ func TestDBUniqueGetNamesErrorRow(t *testing.T) {
 	require.NoError(t, err)
 	defer mockDB.Close()
 
-	row := sqlmock.NewRows([]string{"name"}).CloseError(errorClose)
+	row := sqlmock.NewRows([]string{"name"}).CloseError(errClose)
 	mock.ExpectQuery(uniqueNamesQuery).WillReturnRows(row)
 
 	service := db.New(mockDB)
 	name, err := service.GetUniqueNames()
 	require.Nil(t, name)
-	require.ErrorContains(t, err, errorRow.Error())
+	require.ErrorContains(t, err, errRow.Error())
 	require.NoError(t, mock.ExpectationsWereMet())
 }

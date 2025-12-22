@@ -12,9 +12,9 @@ import (
 )
 
 //go:generate mockery --name=WiFiHandle --testonly --quiet --outpkg wifi_test --output .
-var errorMocker = errors.New("error mock interface")
+var errMocker = errors.New("error mock interface")
 
-const errorGettingInterface = "getting interfaces: "
+const errGettingInterface = "getting interfaces: "
 
 type mockWiFi struct {
 	interfacesFunc func() ([]*wifi.Interface, error)
@@ -25,6 +25,8 @@ func (m *mockWiFi) Interfaces() ([]*wifi.Interface, error) {
 }
 
 func TestGetAddressesSuccess(t *testing.T) {
+	t.Parallel()
+
 	address, _ := net.ParseMAC("00:11:22:33:44:55")
 
 	mock := &mockWiFi{
@@ -43,9 +45,11 @@ func TestGetAddressesSuccess(t *testing.T) {
 }
 
 func TestGetAddressesError(t *testing.T) {
+	t.Parallel()
+
 	mock := &mockWiFi{
 		interfacesFunc: func() ([]*wifi.Interface, error) {
-			return nil, errorMocker
+			return nil, errMocker
 		},
 	}
 
@@ -54,11 +58,13 @@ func TestGetAddressesError(t *testing.T) {
 
 	require.Error(t, err)
 	require.Nil(t, addrs)
-	require.ErrorContains(t, err, errorGettingInterface)
+	require.ErrorContains(t, err, errGettingInterface)
 
 }
 
 func TestGetNamesSuccess(t *testing.T) {
+	t.Parallel()
+
 	mock := &mockWiFi{
 		interfacesFunc: func() ([]*wifi.Interface, error) {
 			return []*wifi.Interface{
@@ -75,9 +81,11 @@ func TestGetNamesSuccess(t *testing.T) {
 }
 
 func TestGetNamesError(t *testing.T) {
+	t.Parallel()
+
 	mock := &mockWiFi{
 		interfacesFunc: func() ([]*wifi.Interface, error) {
-			return nil, errorMocker
+			return nil, errMocker
 		},
 	}
 
@@ -86,5 +94,5 @@ func TestGetNamesError(t *testing.T) {
 
 	require.Error(t, err)
 	require.Nil(t, names)
-	require.ErrorContains(t, err, errorGettingInterface)
+	require.ErrorContains(t, err, errGettingInterface)
 }
