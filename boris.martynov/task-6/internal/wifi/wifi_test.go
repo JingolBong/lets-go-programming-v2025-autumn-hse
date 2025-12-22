@@ -11,6 +11,7 @@ import (
 	myWifiImpl "github.com/JingolBong/task-6/internal/wifi"
 )
 
+//go:generate mockery --name=WiFiHandle --testonly --quiet --outpkg wifi_test --output .
 var errorMocker = errors.New("error mock interface")
 
 const errorGettingInterface = "getting interfaces: "
