@@ -42,7 +42,6 @@ func TestGetAddressesError(t *testing.T) {
 	service := myWifiImpl.New(mock)
 	addrs, err := service.GetAddresses()
 
-	require.Error(t, err)
 	require.Nil(t, addrs)
 	require.ErrorContains(t, err, errGettingInterface)
 }
@@ -71,7 +70,6 @@ func TestGetNamesError(t *testing.T) {
 	service := myWifiImpl.New(mock)
 	names, err := service.GetNames()
 
-	require.Error(t, err)
 	require.Nil(t, names)
 	require.ErrorContains(t, err, errGettingInterface)
 }
